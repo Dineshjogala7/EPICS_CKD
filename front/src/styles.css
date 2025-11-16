@@ -1,0 +1,206 @@
+:root {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.08),
+    0 1px 2px rgba(15, 23, 42, 0.1);
+}
+
+.patient-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+fieldset {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+legend {
+  padding: 0 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.field-helper {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+input,
+select {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+}
+
+button[type="submit"] {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+button[type="submit"]:hover {
+  background-color: #1d4ed8;
+}
+
+button[type="button"] {
+  background-color: #e2e8f0;
+  color: #1f2937;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.result-panel {
+  margin-top: 2rem;
+}
+
+.result {
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.result.success {
+  background-color: #ecfdf5;
+  border-color: #34d399;
+  color: #047857;
+}
+
+.result.error {
+  background-color: #fef2f2;
+  border-color: #f97316;
+  color: #b91c1c;
+}
+
+.result.info {
+  background-color: #eef2ff;
+  border-color: #818cf8;
+  color: #3730a3;
+}
+
+.result h3 {
+  margin: 0 0 0.5rem;
+}
+
+.muted {
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+@media (max-width: 720px) {
+  .card {
+    padding: 1.25rem;
+  }
+
+  fieldset {
+    padding: 1.25rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+

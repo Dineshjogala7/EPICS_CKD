@@ -1,0 +1,6 @@
+# This file ensures the models directory is tracked by git
+# Place your trained model files here:
+# - ckd_prediction_pipeline.pkl
+# - original_feature_names.pkl
+# - selected_feature_indices.pkl
+

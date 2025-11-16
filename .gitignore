@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Flask
+instance/
+.webassets-cache
+
+# Model files (large binary files)
+backend/models/*.pkl
+!backend/models/.gitkeep
+
+# Logs
+*.log
+backend/logs/
+front/logs/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+front/node_modules/
+front/dist/
+front/.vite/
+
+# Uploads
+backend/uploads/
+
+# Data files (if large)
+*.csv
+!backend/data/defaults.json
+
