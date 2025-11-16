@@ -107,9 +107,14 @@ def _predict_single(payload: dict) -> float:
     return float(pred_prob)
 
 
-@prediction_bp.route("/predict", methods=["POST"])
+@prediction_bp.route("/predict", methods=["POST", "OPTIONS"])  # ← ADD OPTIONS HERE
 def predict_from_payload():
     """Accept JSON payload and return CKD probability."""
+    
+    # Handle preflight OPTIONS request
+    if request.method == "OPTIONS":
+        return "", 204
+    
     try:
         data = request.get_json()
         if not data:
