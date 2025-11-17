@@ -40,44 +40,45 @@ function PatientForm({ fields, sampleValues, apiBaseUrl }) {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setApiError(null);
-    setPrediction(null);
+  event.preventDefault();
+  setIsSubmitting(true);
+  setApiError(null);
+  setPrediction(null);
 
-    try {
-      const payload = Object.fromEntries(
-        Object.entries(formValues).map(([key, value]) => {
-          if (value === "") {
-            return [key, null];
-          }
-          return [key, typeof value === "string" ? Number(value) : value];
-        }),
-      );
+  try {
+    const payload = Object.fromEntries(
+      Object.entries(formValues).map(([key, value]) => {
+        if (value === "") {
+          return [key, null];
+        }
+        return [key, typeof value === "string" ? Number(value) : value];
+      }),
+    );
 
-      const { data } = await axios.post(`${apiBaseUrl}/predict`, payload, {
-        headers: { "Content-Type": "application/json" },
+    // FIX: Changed from backticks to parentheses
+    const { data } = await axios.post(`${apiBaseUrl}/predict`, payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (data.status === "success") {
+      setPrediction({
+        percentage: data.prediction_percent,
+        probability: data.prediction_probability,
       });
-
-      if (data.status === "success") {
-        setPrediction({
-          percentage: data.prediction_percent,
-          probability: data.prediction_probability,
-        });
-      } else {
-        setApiError(data.message || "Unable to compute prediction.");
-      }
-    } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "An unexpected error occurred while calling the API.";
-      setApiError(message);
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      setApiError(data.message || "Unable to compute prediction.");
     }
-  };
-
+  } catch (error) {
+    console.error("API Error:", error); // Add logging for debugging
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "An unexpected error occurred while calling the API.";
+    setApiError(message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   const handleReset = () => {
     setFormValues(buildInitialState(fields));
     setPrediction(null);
