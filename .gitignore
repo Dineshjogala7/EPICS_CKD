@@ -16,8 +16,11 @@ build/
 instance/
 .webassets-cache
 
-# Model files (large binary files)
-backend/models/*.pkl
+# Model files - ALLOW specific models
+# backend/models/*.pkl
+!backend/models/ckd_prediction_pipeline.pkl
+!backend/models/original_feature_names.pkl
+!backend/models/selected_feature_indices.pkl
 !backend/models/.gitkeep
 
 # Logs
@@ -52,4 +55,3 @@ backend/uploads/
 # Data files (if large)
 *.csv
 !backend/data/defaults.json
-
