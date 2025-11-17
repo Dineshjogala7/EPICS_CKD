@@ -16,17 +16,13 @@ build/
 instance/
 .webassets-cache
 
-# Model files - ALLOW specific models
-# backend/models/*.pkl
-!backend/models/ckd_prediction_pipeline.pkl
-!backend/models/original_feature_names.pkl
-!backend/models/selected_feature_indices.pkl
-!backend/models/.gitkeep
+# Model files - Allow all models in models/ folder
+*.pkl
+!models/*.pkl
 
 # Logs
 *.log
-backend/logs/
-front/logs/
+logs/
 
 # Environment variables
 .env
@@ -44,14 +40,9 @@ front/logs/
 .DS_Store
 Thumbs.db
 
-# Node
-front/node_modules/
-front/dist/
-front/.vite/
-
 # Uploads
-backend/uploads/
+uploads/
 
 # Data files (if large)
 *.csv
-!backend/data/defaults.json
+!data/defaults.json
