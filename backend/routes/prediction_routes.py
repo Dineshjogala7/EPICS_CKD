@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import json
 import re
+import os
 
 from config import (
     CKD_MODEL_PATH,
@@ -362,11 +363,17 @@ def predict_from_payload():
         
         current_app.logger.info(f"Prediction: {prediction_percent}%, SHAP count: {len(shap_explanations)}")
         
+        # Calculate feature statistics and generate suggestions
+        feature_stats = _get_feature_stats()
+        suggestions = _generate_suggestions(shap_explanations, data, feature_stats)
+        
         response = {
             "status": "success",
             "prediction_percent": prediction_percent,
             "prediction_probability": round(probability, 4),
             "shap_explanations": shap_explanations,
+            "suggestions": suggestions,
+            "feature_stats": feature_stats
         }
         
         if expected_value is not None:
@@ -398,3 +405,96 @@ def predict_from_payload():
                 "message": f"Column mismatch: {error_msg}"
             }), 400
         return jsonify({"status": "error", "message": error_msg}), 500
+
+# ==========================================
+# Feature Statistics & Suggestions Logic
+# ==========================================
+
+_feature_stats_cache = None
+
+def _get_feature_stats():
+    """
+    Load dataset and calculate min, q1, median, q3, max for all features.
+    Cached after first run.
+    """
+    global _feature_stats_cache
+    if _feature_stats_cache is not None:
+        return _feature_stats_cache
+        
+    try:
+        # Path to dataset - adjust if needed based on your structure
+        dataset_path = "dataset/Chronic_Kidney_Dsease_data.csv"
+        if not os.path.exists(dataset_path):
+            current_app.logger.warning(f"Dataset not found at {dataset_path}, stats will be unavailable.")
+            return {}
+            
+        df = pd.read_csv(dataset_path)
+        
+        # Clean target like in training
+        target_col = "Diagnosis"
+        if target_col in df.columns:
+            df = df.drop(columns=[target_col])
+        if 'PatientID' in df.columns:
+            df = df.drop(columns=['PatientID'])
+            
+        stats = {}
+        for col in df.select_dtypes(include=[np.number]).columns:
+            desc = df[col].describe()
+            stats[col] = {
+                "min": float(desc["min"]),
+                "q1": float(desc["25%"]),
+                "median": float(desc["50%"]),
+                "q3": float(desc["75%"]),
+                "max": float(desc["max"])
+            }
+        
+        _feature_stats_cache = stats
+        current_app.logger.info(f"✅ Calculated stats for {len(stats)} features")
+        return stats
+        
+    except Exception as e:
+        current_app.logger.error(f"Failed to calculate feature stats: {e}")
+        return {}
+
+def _generate_suggestions(shap_explanations, patient_data, stats):
+    """
+    Generate actionable suggestions based on SHAP impact and population stats.
+    """
+    suggestions = []
+    
+    for item in shap_explanations:
+        feature = item['feature']
+        impact = item['impact']
+        value = item['value']
+        
+        # Skip if we don't have stats or value
+        if feature not in stats or value is None:
+            continue
+            
+        feat_stats = stats[feature]
+        median = feat_stats['median']
+        
+        # Logic:
+        # If Impact > 0 (Increases Risk):
+        #   - If Value > Median -> "High {feature} is increasing risk. Try to lower it."
+        #   - If Value < Median -> "Low {feature} is increasing risk. Try to increase it."
+        # If Impact < 0 (Decreases Risk):
+        #   - "Good job! Your {feature} levels are helping reduce risk."
+        
+        if impact > 0:
+            if value > median:
+                msg = f"High **{feature}** ({value}) is increasing your risk. Aim to reduce it towards {median}."
+                action = "reduce"
+            else:
+                msg = f"Low **{feature}** ({value}) is increasing your risk. Aim to increase it towards {median}."
+                action = "increase"
+            
+            suggestions.append({
+                "feature": feature,
+                "message": msg,
+                "action": action,
+                "current_value": value,
+                "target_value": median
+            })
+            
+    return suggestions
