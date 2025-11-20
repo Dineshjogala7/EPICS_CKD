@@ -12,7 +12,12 @@ function App() {
   const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <div className="app">
         <Navbar />
         <motion.main
